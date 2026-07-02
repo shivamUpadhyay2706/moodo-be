@@ -13,12 +13,22 @@ const expressJSDocSwagger = require('express-jsdoc-swagger');
 const app = express();
 const { PORT } = require('./config/env');
 
-// Run Database
-connectDB();
-
 // Application Middleware Settings
 app.use(cors());
 app.use(express.json());
+
+// Database connection middleware to ensure DB is connected before handling requests
+app.use(async (req, res, next) => {
+    try {
+        await connectDB();
+        next();
+    } catch (err) {
+        res.status(500).json({ 
+            message: "Database connection failed ❌", 
+            error: err.message 
+        });
+    }
+});
 
 // Swagger documentation configuration
 expressJSDocSwagger(app)({
