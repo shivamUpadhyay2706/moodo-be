@@ -204,9 +204,51 @@ const getBalanceStats = async (groupId, userId) => {
     };
 };
 
+const addPersonalExpense = async (expenseData, userId) => {
+    const { description, amount, category, date } = expenseData;
+
+    if (!description || !amount) {
+        const err = new Error("Description and amount are required! ❌");
+        err.statusCode = 400;
+        throw err;
+    }
+
+    const newExpense = new Expense({
+        description,
+        amount: parseFloat(amount),
+        category: category || 'other',
+        paidBy: userId,
+        splitAmong: [userId],
+        date: date || Date.now()
+    });
+
+    return await newExpense.save();
+};
+
+const listPersonalExpenses = async (userId) => {
+    return await Expense.find({ paidBy: userId, group: null })
+        .populate('paidBy', 'username')
+        .sort({ date: -1 });
+};
+
+const deletePersonalExpense = async (expenseId, userId) => {
+    const expense = await Expense.findOne({ _id: expenseId, paidBy: userId, group: null });
+    if (!expense) {
+        const err = new Error("Personal expense log not found! ❌");
+        err.statusCode = 404;
+        throw err;
+    }
+
+    await Expense.findByIdAndDelete(expenseId);
+    return { message: "Personal expense deleted successfully! 🗑️" };
+};
+
 module.exports = {
     addExpense,
     listExpenses,
     deleteExpense,
-    getBalanceStats
+    getBalanceStats,
+    addPersonalExpense,
+    listPersonalExpenses,
+    deletePersonalExpense
 };

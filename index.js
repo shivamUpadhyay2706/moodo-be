@@ -6,6 +6,7 @@ const groupRoutes = require('./routes/groupRoutes');
 const taskRoutes = require('./routes/taskRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const planRoutes = require('./routes/planRoutes');
+const personalExpenseRoutes = require('./routes/personalExpenseRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const expressJSDocSwagger = require('express-jsdoc-swagger');
@@ -55,6 +56,7 @@ app.use('/api/groups', groupRoutes);
 app.use('/api/tasks', taskRoutes);
 app.use('/api/groups/:groupId/expenses', expenseRoutes);
 app.use('/api/groups/:groupId/plans', planRoutes);
+app.use('/api/expenses', personalExpenseRoutes);
 
 // Base route
 app.get('/', (req, res) => {

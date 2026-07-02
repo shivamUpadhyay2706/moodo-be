@@ -4,7 +4,12 @@ const ExpenseSchema = new mongoose.Schema({
     group: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Group',
-        required: true
+        required: false
+    },
+    category: {
+        type: String,
+        default: 'other',
+        trim: true
     },
     description: {
         type: String,
