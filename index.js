@@ -11,7 +11,7 @@ const errorHandler = require('./middleware/errorHandler');
 const expressJSDocSwagger = require('express-jsdoc-swagger');
 
 const app = express();
-const PORT = 3001;
+const { PORT } = require('./config/env');
 
 // Run Database
 connectDB();
@@ -54,9 +54,11 @@ app.get('/', (req, res) => {
 // Register Global Error Handler Middleware
 app.use(errorHandler);
 
-app.listen(PORT, () => {
-    console.log(`Server started on: http://localhost:${PORT}`);
-    console.log(`Swagger Documentation available at: http://localhost:${PORT}/api-docs`);
-});
+if (!process.env.VERCEL) {
+    app.listen(PORT, () => {
+        console.log(`Server started on: http://localhost:${PORT}`);
+        console.log(`Swagger Documentation available at: http://localhost:${PORT}/api-docs`);
+    });
+}
 
 module.exports = app;
